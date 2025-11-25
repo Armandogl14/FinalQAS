@@ -1,0 +1,51 @@
+spring:
+  application:
+    name: inventory-system-stress-test
+
+  datasource:
+    url: jdbc:h2:mem:stress_test_db;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ""
+    hikari:
+      maximum-pool-size: 50
+      minimum-idle: 10
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+        format_sql: false
+
+  h2:
+    console:
+      enabled: false
+
+server:
+  port: 8081
+  tomcat:
+    max-connections: 1000
+    max-threads: 200
+    accept-count: 100
+
+logging:
+  level:
+    org.springframework: WARN
+    org.hibernate: WARN
+    org.apache.jmeter: INFO
+    org.example: INFO
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,metrics,info
+  endpoint:
+    health:
+      show-details: always

@@ -1,0 +1,19 @@
+name: Integration Compose
+
+on:
+  workflow_dispatch:
+
+jobs:
+  compose-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker compose -f sistema_gestion_intventarios/docker-compose.yml up -d
+      - run: |
+          for i in {1..30}; do
+            if curl -sSf http://localhost:8080/actuator/health >/dev/null; then exit 0; fi
+            sleep 5
+          done
+          exit 1
+      - run: curl -sSf http://localhost:8080/actuator/prometheus | head -n 10
+      - run: docker compose -f sistema_gestion_intventarios/docker-compose.yml down

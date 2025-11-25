@@ -1,0 +1,29 @@
+name: Frontend CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: sistema_gestion_intventarios/frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm ci
+      - run: CI=true npm test -- --watchAll=false
+      - run: npx playwright install --with-deps
+      - run: xvfb-run -a npx playwright test tests/*.js --reporter=html
+      - uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: |
+            test-results
+            playwright-report
+          if-no-files-found: ignore

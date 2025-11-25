@@ -1,0 +1,35 @@
+name: Backend CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: sistema_gestion_intventarios
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: gradle/actions/setup-gradle@v3
+      - run: chmod +x gradlew
+      - run: ./gradlew test --info
+      - uses: actions/upload-artifact@v4
+        with:
+          name: backend-test-report
+          path: |
+            build/reports/tests/test
+            build/test-results/test
+            target/cucumber-reports.html
+            target/cucumber-reports
+          if-no-files-found: ignore
+  docker-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build -t inventory-backend -f sistema_gestion_intventarios/Dockerfile sistema_gestion_intventarios
