@@ -54,10 +54,10 @@ services:
     build: ./frontend
     container_name: react_inventory
     environment:
-      - REACT_APP_API_URL=http://localhost:8080
-      - REACT_APP_KEYCLOAK_URL=http://localhost:8180
+      - NEXT_PUBLIC_API_URL=http://localhost:8080
+      - NEXT_PUBLIC_KEYCLOAK_URL=http://localhost:8180
     ports:
-      - "3000:80"
+      - "3000:3000"
     depends_on:
       - app
 
@@ -115,10 +115,13 @@ services:
     image: jaegertracing/all-in-one:1.58
     container_name: jaeger
     restart: unless-stopped
+    environment:
+      - COLLECTOR_ZIPKIN_HOST_PORT=:9411
     ports:
       - "16686:16686"
       - "14250:14250"
       - "14268:14268"
+      - "9411:9411"
 
   postgres-exporter:
     image: prometheuscommunity/postgres-exporter:v0.15.0
@@ -130,6 +133,17 @@ services:
       - "9187:9187"
     depends_on:
       - postgres
+
+  keycloak-init:
+    image: curlimages/curl:8.5.0
+    container_name: keycloak-init
+    entrypoint: /bin/sh -c "sleep 30 && /scripts/keycloak-init.sh"
+    volumes:
+      - ./keycloak-init.sh:/scripts/keycloak-init.sh:ro
+    depends_on:
+      - keycloak
+    networks:
+      - default
 
 volumes:
   postgres_data:
