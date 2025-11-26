@@ -28,7 +28,13 @@ export const apiClient = {
       throw new Error(error.message || `API Error: ${response.statusText}`);
     }
 
-    return response.json();
+    // Some endpoints (DELETE) may return 204 No Content — handle empty body safely
+    const text = await response.text();
+    if (!text) {
+      return {} as T;
+    }
+
+    return JSON.parse(text) as T;
   },
 
   get<T>(endpoint: string, token?: string) {

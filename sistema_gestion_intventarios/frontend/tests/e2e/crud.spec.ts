@@ -4,7 +4,13 @@ import { ensureE2EAuth } from './auth';
 test.describe('CRUD flows (mocked backend)', () => {
   test.beforeEach(async ({ page }) => {
     await ensureE2EAuth(page, 'admin');
-    await page.route('**/api/v2/products/**', route => route.fulfill({ status: 200, contentType: 'application/json', body: '[]' }));
+    await page.route('**/api/v2/products*', route => {
+      if (route.request().method() === 'GET') {
+        route.fulfill({ status: 200, contentType: 'application/json', body: '[]' });
+      } else {
+        route.continue();
+      }
+    });
     await page.route('**/api/public/products', route => route.fulfill({ status: 200, contentType: 'application/json', body: '[]' }));
     await page.goto('/products');
   });
@@ -15,6 +21,25 @@ test.describe('CRUD flows (mocked backend)', () => {
       if (route.request().method() === 'POST') {
         const body = JSON.parse(route.request().postData() || '{}');
         body.id = 1001;
+
+        // Register a GET stub that returns the created product so the UI shows it
+        const created = [{
+          id: 1001,
+          name: body.name || 'CRUD Product',
+          description: body.description || 'Desc',
+          category: body.category || 'E2E',
+          price: body.price || 1.0,
+          initialQuantity: body.initialQuantity || 0,
+          minimumStock: body.minimumStock || 5
+        }];
+        await page.route('**/api/v2/products*', r => {
+          if (r.request().method() === 'GET') {
+            r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(created) });
+          } else {
+            r.continue();
+          }
+        });
+
         await route.fulfill({ status: 201, contentType: 'application/json', body: JSON.stringify(body) });
       } else {
         await route.fulfill({ status: 200, contentType: 'application/json', body: '[]' });
@@ -30,6 +55,9 @@ test.describe('CRUD flows (mocked backend)', () => {
     await page.getByRole('button', { name: /Create Product/i }).click();
     await expect(page.getByText(/Product created successfully/i)).toBeVisible();
 
+    // wait a moment for the product list to refresh and render
+    await page.waitForTimeout(250);
+
     // Mock update
     await page.route('**/api/v2/products/1001', async route => {
       if (route.request().method() === 'PUT') {
@@ -41,15 +69,11 @@ test.describe('CRUD flows (mocked backend)', () => {
       }
     });
 
-    // Open edit modal by simulating a click on edit (bypass table selection by calling onEdit via DOM)
-    // For simplicity, call the edit button if present; otherwise just open modal
-    const editBtn = page.getByTitle('Edit Product');
-    if (await editBtn.count() > 0) {
-      await editBtn.first().click();
-    } else {
-      // open modal fallback
-      await page.getByRole('button', { name: /New Product/i }).click();
-    }
+    // Open edit modal by clicking the Edit button in the product row.
+    const editBtn = page.getByTitle('Edit Product').first();
+    // Wait for edit button to appear (UI refresh after creation)
+    await expect(editBtn).toBeVisible({ timeout: 3000 });
+    await editBtn.click();
 
     // Update fields
     await page.getByPlaceholder('Enter product name').fill('CRUD Product Updated');
@@ -59,7 +83,8 @@ test.describe('CRUD flows (mocked backend)', () => {
     // Mock delete
     await page.route('**/api/v2/products/1001', async route => {
       if (route.request().method() === 'DELETE') {
-        await route.fulfill({ status: 204, body: '' });
+        // Return a small JSON body to avoid empty-response parsing issues in some browsers
+        await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({}) });
       } else {
         await route.fulfill({ status: 200, contentType: 'application/json', body: '[]' });
       }
@@ -68,10 +93,11 @@ test.describe('CRUD flows (mocked backend)', () => {
     // Click delete if exists
     const deleteBtn = page.getByTitle('Delete Product');
     if (await deleteBtn.count() > 0) {
+      // Ensure confirm dialog returns true before triggering delete
+      await page.evaluate(() => { window.confirm = () => true; });
       await deleteBtn.first().click();
-      // Confirm alert
-      await page.evaluate(() => window.confirm = () => true);
-      await expect(page.getByText(/Product deleted successfully/i)).toBeVisible();
+      // Wait for success message after delete
+      await expect(page.getByText(/Product deleted successfully/i)).toBeVisible({ timeout: 5000 });
     }
   });
 });
