@@ -63,12 +63,16 @@ export const getToken = () => {
 };
 
 export const getUserRoles = () => {
-  const roles = keycloakInstance?.tokenParsed?.roles || [];
+  const parsed: any = keycloakInstance?.tokenParsed || {};
+  const realmRoles: string[] = parsed?.realm_access?.roles || [];
+  const clientId = config.KEYCLOAK_CLIENT_ID;
+  const clientRoles: string[] = parsed?.resource_access?.[clientId]?.roles || [];
+  const normalized = [...realmRoles, ...clientRoles].map((r: string) => `ROLE_${r.toUpperCase()}`);
   return {
-    isAdmin: roles.includes('ROLE_ADMIN'),
-    isEmployee: roles.includes('ROLE_EMPLOYEE'),
-    isGuest: !roles.includes('ROLE_ADMIN') && !roles.includes('ROLE_EMPLOYEE'),
-    roles
+    isAdmin: normalized.includes('ROLE_ADMIN'),
+    isEmployee: normalized.includes('ROLE_EMPLOYEE'),
+    isGuest: !normalized.includes('ROLE_ADMIN') && !normalized.includes('ROLE_EMPLOYEE'),
+    roles: normalized
   };
 };
 

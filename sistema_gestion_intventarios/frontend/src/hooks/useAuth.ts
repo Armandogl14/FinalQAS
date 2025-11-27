@@ -29,7 +29,7 @@ export const useAuth = () => {
           }
 
           const auth = await kc.init({
-            onLoad: 'login-required',
+            onLoad: 'check-sso',
             checkLoginIframe: false,
             enableLogging: true,
             pkceMethod: 'S256'
