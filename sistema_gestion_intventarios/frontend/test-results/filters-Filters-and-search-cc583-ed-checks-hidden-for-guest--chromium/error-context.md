@@ -1,0 +1,53 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - navigation [ref=e2]:
+    - generic [ref=e4]:
+      - link "Inventory" [ref=e6] [cursor=pointer]:
+        - /url: /dashboard
+        - img [ref=e8]
+        - generic [ref=e10]: Inventory
+      - generic [ref=e12]:
+        - link "Dashboard" [ref=e13] [cursor=pointer]:
+          - /url: /dashboard
+        - link "Products" [ref=e14] [cursor=pointer]:
+          - /url: /products
+        - link "Stock History" [ref=e15] [cursor=pointer]:
+          - /url: /stock-history
+      - button "Login" [ref=e17] [cursor=pointer]:
+        - img [ref=e18]
+        - generic [ref=e21]: Login
+  - main [ref=e22]:
+    - generic [ref=e24]:
+      - heading "Products" [level=1] [ref=e26]
+      - generic [ref=e27]:
+        - generic [ref=e28]:
+          - img [ref=e29]
+          - heading "Filters" [level=3] [ref=e31]
+        - generic [ref=e33]:
+          - img [ref=e34]
+          - textbox "Search products..." [ref=e37]
+        - generic [ref=e38]:
+          - generic [ref=e39]:
+            - generic [ref=e40]:
+              - img [ref=e41]
+              - text: Category
+            - combobox [ref=e44] [cursor=pointer]:
+              - option "All Categories" [selected]
+          - generic [ref=e45]:
+            - generic [ref=e46]:
+              - img [ref=e47]
+              - text: Stock Status
+            - combobox [ref=e51] [cursor=pointer]:
+              - option "All Stock Levels" [selected]
+              - option "In Stock"
+              - option "Low Stock"
+              - option "Out of Stock"
+          - button "Reset" [ref=e53] [cursor=pointer]:
+            - img [ref=e54]
+            - text: Reset
+  - contentinfo [ref=e60]:
+    - paragraph [ref=e62]: © 2025 Inventory Management System. All rights reserved.
+  - alert [ref=e63]
+```

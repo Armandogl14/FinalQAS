@@ -1,0 +1,281 @@
+/* Stock Management Page Styles */
+.stock-management-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  width: 100%;
+  animation: fadeIn 0.4s ease-out;
+}
+
+.error-message {
+  padding: 1rem 1.25rem;
+  background: #fef2f2;
+  border-left: 4px solid #ef4444;
+  border-radius: 0 12px 12px 0;
+  color: #dc2626;
+  font-size: 0.9375rem;
+  font-weight: 500;
+}
+
+.success-message {
+  padding: 1rem 1.25rem;
+  background: #f0fdf4;
+  border-left: 4px solid #10b981;
+  border-radius: 0 12px 12px 0;
+  color: #059669;
+  font-size: 0.9375rem;
+  font-weight: 500;
+}
+
+.page-title {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #1e293b;
+  text-align: center;
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+/* Stats Grid */
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .stats-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.stat-card {
+  background: #ffffff;
+  padding: 1.5rem;
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  border-left: 4px solid;
+  transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+}
+
+.stat-card-red {
+  border-left-color: #ef4444;
+}
+
+.stat-card-yellow {
+  border-left-color: #f59e0b;
+}
+
+.stat-card-green {
+  border-left-color: #10b981;
+}
+
+.stat-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #64748b;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.stat-value {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin: 0.5rem 0 0 0;
+}
+
+.stat-value-red {
+  color: #dc2626;
+}
+
+.stat-value-yellow {
+  color: #d97706;
+}
+
+.stat-value-green {
+  color: #059669;
+}
+
+/* Alert Sections */
+.alert-section {
+  margin-top: 2rem;
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 1.5rem 0;
+}
+
+.section-icon {
+  width: 28px;
+  height: 28px;
+}
+
+.products-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .products-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.product-alert-card {
+  padding: 1.25rem;
+  border-radius: 14px;
+  border: 2px solid;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.product-alert-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.product-alert-card-red {
+  background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+  border-color: #fca5a5;
+}
+
+.product-alert-card-yellow {
+  background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+  border-color: #fcd34d;
+}
+
+.product-name {
+  font-weight: 700;
+  font-size: 1.125rem;
+  margin: 0 0 0.5rem 0;
+}
+
+.product-name-red {
+  color: #991b1b;
+}
+
+.product-name-yellow {
+  color: #92400e;
+}
+
+.product-description {
+  font-size: 0.875rem;
+  margin: 0 0 1rem 0;
+  line-height: 1.5;
+}
+
+.product-description-red {
+  color: #b91c1c;
+}
+
+.product-description-yellow {
+  color: #a16207;
+}
+
+.product-stock-info {
+  font-size: 0.875rem;
+  margin: 0 0 1rem 0;
+  font-weight: 500;
+}
+
+.product-stock-info-yellow {
+  color: #a16207;
+}
+
+.alert-button {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.alert-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.alert-button:active {
+  transform: translateY(0);
+}
+
+.alert-button-red {
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+  color: #ffffff;
+}
+
+.alert-button-red:hover {
+  background: linear-gradient(135deg, #b91c1c 0%, #991b1b 100%);
+}
+
+.alert-button-yellow {
+  background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+  color: #ffffff;
+}
+
+.alert-button-yellow:hover {
+  background: linear-gradient(135deg, #b45309 0%, #92400e 100%);
+}
+
+/* Loading and Auth States */
+.auth-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+}
+
+.auth-spinner {
+  width: 48px;
+  height: 48px;
+  border: 3px solid #e0e7ff;
+  border-top: 3px solid #3b82f6;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.auth-denied {
+  text-align: center;
+  padding: 3rem 2rem;
+}
+
+.auth-denied-text {
+  color: #64748b;
+  font-size: 1.125rem;
+  margin: 0;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+

@@ -1,0 +1,116 @@
+{
+  "uid": "api-errors-controller",
+  "title": "API Errors & Controller Latency",
+  "timezone": "browser",
+  "schemaVersion": 38,
+  "version": 1,
+  "refresh": "10s",
+  "time": { "from": "now-1h", "to": "now" },
+  "templating": {
+    "list": [
+      {
+        "name": "endpoint",
+        "type": "query",
+        "datasource": { "type": "prometheus", "name": "Prometheus" },
+        "refresh": 2,
+        "definition": "label_values(http_server_requests_seconds_count, uri)",
+        "query": "label_values(http_server_requests_seconds_count, uri)",
+        "includeAll": true,
+        "allValue": ".*",
+        "multi": true
+      },
+      {
+        "name": "method",
+        "type": "query",
+        "datasource": { "type": "prometheus", "name": "Prometheus" },
+        "refresh": 2,
+        "definition": "label_values(http_server_requests_seconds_count, method)",
+        "query": "label_values(http_server_requests_seconds_count, method)",
+        "includeAll": true,
+        "allValue": ".*",
+        "multi": true
+      }
+    ]
+  },
+  "panels": [
+    {
+      "id": 1,
+      "type": "timeseries",
+      "title": "Client Errors (4xx)",
+      "gridPos": { "x": 0, "y": 0, "w": 12, "h": 8 },
+      "datasource": { "type": "prometheus", "name": "Prometheus" },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum by (uri, method) (rate(http_server_requests_seconds_count{uri=~\"$endpoint\", method=~\"$method\", status=~\"4..\"}[5m]))"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "type": "timeseries",
+      "title": "Server Errors (5xx)",
+      "gridPos": { "x": 12, "y": 0, "w": 12, "h": 8 },
+      "datasource": { "type": "prometheus", "name": "Prometheus" },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum by (uri, method) (rate(http_server_requests_seconds_count{uri=~\"$endpoint\", method=~\"$method\", status=~\"5..\"}[5m]))"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "type": "timeseries",
+      "title": "ProductControllerV2 Latency P95",
+      "gridPos": { "x": 0, "y": 8, "w": 12, "h": 8 },
+      "datasource": { "type": "prometheus", "name": "Prometheus" },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "histogram_quantile(0.95, sum by (le, uri, method) (rate(http_server_requests_seconds_bucket{uri=~\"/api/v2/products.*\", method=~\"$method\"}[5m])))"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "type": "timeseries",
+      "title": "ProductControllerV2 Requests/sec",
+      "gridPos": { "x": 12, "y": 8, "w": 12, "h": 8 },
+      "datasource": { "type": "prometheus", "name": "Prometheus" },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum by (uri, method) (rate(http_server_requests_seconds_count{uri=~\"/api/v2/products.*\", method=~\"$method\"}[5m]))"
+        }
+      ]
+    }
+    ,
+    {
+      "id": 5,
+      "type": "timeseries",
+      "title": "Status Code Distribution (2xx/4xx/5xx)",
+      "gridPos": { "x": 0, "y": 16, "w": 24, "h": 8 },
+      "datasource": { "type": "prometheus", "name": "Prometheus" },
+      "targets": [
+        { "refId": "A", "expr": "sum by (uri) (rate(http_server_requests_seconds_count{uri=~\\\"$endpoint\\\", status=~\\\"2..\\\"}[5m]))" },
+        { "refId": "B", "expr": "sum by (uri) (rate(http_server_requests_seconds_count{uri=~\\\"$endpoint\\\", status=~\\\"4..\\\"}[5m]))" },
+        { "refId": "C", "expr": "sum by (uri) (rate(http_server_requests_seconds_count{uri=~\\\"$endpoint\\\", status=~\\\"5..\\\"}[5m]))" }
+      ]
+    },
+    {
+      "id": 6,
+      "type": "timeseries",
+      "title": "Latency P99",
+      "gridPos": { "x": 0, "y": 24, "w": 24, "h": 8 },
+      "datasource": { "type": "prometheus", "name": "Prometheus" },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "histogram_quantile(0.99, sum by (le, uri, method) (rate(http_server_requests_seconds_bucket{uri=~\"$endpoint\", method=~\"$method\"}[5m])))"
+        }
+      ]
+    }
+  ]
+}
+

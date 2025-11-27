@@ -1,0 +1,110 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - navigation [ref=e2]:
+    - generic [ref=e4]:
+      - link "Inventory" [ref=e6]:
+        - /url: /dashboard
+        - img [ref=e8]
+        - generic [ref=e10]: Inventory
+      - generic [ref=e12]:
+        - link "Dashboard" [ref=e13]:
+          - /url: /dashboard
+        - link "Products" [ref=e14]:
+          - /url: /products
+        - link "Stock History" [ref=e15]:
+          - /url: /stock-history
+      - button "Login" [ref=e17] [cursor=pointer]:
+        - img [ref=e18]
+        - generic [ref=e21]: Login
+  - main [ref=e22]:
+    - generic [ref=e24]:
+      - heading "Products" [level=1] [ref=e26]
+      - generic [ref=e27]:
+        - generic [ref=e28]:
+          - img [ref=e29]
+          - heading "Filters" [level=3] [ref=e31]
+        - generic [ref=e33]:
+          - img [ref=e34]
+          - textbox "Search products..." [ref=e37]
+        - generic [ref=e38]:
+          - generic [ref=e39]:
+            - generic [ref=e40]:
+              - img [ref=e41]
+              - text: Category
+            - combobox [ref=e44] [cursor=pointer]:
+              - option "All Categories" [selected]
+              - option "Fruits"
+              - option "Electronics"
+          - generic [ref=e45]:
+            - generic [ref=e46]:
+              - img [ref=e47]
+              - text: Stock Status
+            - combobox [ref=e51] [cursor=pointer]:
+              - option "All Stock Levels" [selected]
+              - option "In Stock"
+              - option "Low Stock"
+              - option "Out of Stock"
+          - button "Reset" [ref=e53] [cursor=pointer]:
+            - img [ref=e54]
+            - text: Reset
+      - generic [ref=e57]:
+        - table [ref=e59]:
+          - rowgroup [ref=e60]:
+            - row "Name Category Price Stock Min. Stock Status" [ref=e61]:
+              - columnheader "Name" [ref=e62]
+              - columnheader "Category" [ref=e63]
+              - columnheader "Price" [ref=e64]
+              - columnheader "Stock" [ref=e65]
+              - columnheader "Min. Stock" [ref=e66]
+              - columnheader "Status" [ref=e67]
+          - rowgroup [ref=e68]:
+            - row "Apple Fruits $1.20 10 5 In Stock" [ref=e69]:
+              - cell "Apple" [ref=e70]
+              - cell "Fruits" [ref=e71]
+              - cell "$1.20" [ref=e72]
+              - cell "10" [ref=e73]
+              - cell "5" [ref=e74]
+              - cell "In Stock" [ref=e75]:
+                - generic [ref=e76]:
+                  - img [ref=e77]
+                  - text: In Stock
+            - row "Orange Fruits $0.80 2 5 Low Stock" [ref=e80]:
+              - cell "Orange" [ref=e81]
+              - cell "Fruits" [ref=e82]
+              - cell "$0.80" [ref=e83]
+              - cell "2" [ref=e84]
+              - cell "5" [ref=e85]
+              - cell "Low Stock" [ref=e86]:
+                - generic [ref=e87]:
+                  - img [ref=e88]
+                  - text: Low Stock
+            - row "Laptop Electronics $1200.00 0 1 Out of Stock" [ref=e90]:
+              - cell "Laptop" [ref=e91]
+              - cell "Electronics" [ref=e92]
+              - cell "$1200.00" [ref=e93]
+              - cell "0" [ref=e94]
+              - cell "1" [ref=e95]
+              - cell "Out of Stock" [ref=e96]:
+                - generic [ref=e97]:
+                  - img [ref=e98]
+                  - text: Out of Stock
+        - generic [ref=e100]:
+          - generic [ref=e101]: Showing 1 to 3 of 3
+          - generic [ref=e102]:
+            - button "First page" [disabled] [ref=e103]:
+              - img [ref=e104]
+            - button "Previous page" [disabled] [ref=e107]:
+              - img [ref=e108]
+            - generic [ref=e110]:
+              - spinbutton [ref=e111]: "1"
+              - generic [ref=e112]: of 1
+            - button "Next page" [disabled] [ref=e113]:
+              - img [ref=e114]
+            - button "Last page" [disabled] [ref=e116]:
+              - img [ref=e117]
+  - contentinfo [ref=e120]:
+    - paragraph [ref=e122]: © 2025 Inventory Management System. All rights reserved.
+  - alert [ref=e123]
+```
