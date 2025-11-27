@@ -1,0 +1,89 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - navigation [ref=e2]:
+    - generic [ref=e4]:
+      - link "Inventory" [ref=e6]:
+        - /url: /dashboard
+        - img [ref=e8]
+        - generic [ref=e10]: Inventory
+      - generic [ref=e12]:
+        - link "Dashboard" [ref=e13]:
+          - /url: /dashboard
+        - link "Products" [ref=e14]:
+          - /url: /products
+        - link "Stock History" [ref=e15]:
+          - /url: /stock-history
+      - button "Login" [ref=e17] [cursor=pointer]:
+        - img [ref=e18]
+        - generic [ref=e21]: Login
+  - main [ref=e22]:
+    - generic [ref=e24]:
+      - heading "Products" [level=1] [ref=e26]
+      - generic [ref=e27]:
+        - generic [ref=e28]:
+          - img [ref=e29]
+          - heading "Filters" [level=3] [ref=e31]
+        - generic [ref=e33]:
+          - img [ref=e34]
+          - textbox "Search products..." [ref=e37]
+        - generic [ref=e38]:
+          - generic [ref=e39]:
+            - generic [ref=e40]:
+              - img [ref=e41]
+              - text: Category
+            - combobox [ref=e44] [cursor=pointer]:
+              - option "All Categories" [selected]
+              - option "PC"
+          - generic [ref=e45]:
+            - generic [ref=e46]:
+              - img [ref=e47]
+              - text: Stock Status
+            - combobox [ref=e51] [cursor=pointer]:
+              - option "All Stock Levels" [selected]
+              - option "In Stock"
+              - option "Low Stock"
+              - option "Out of Stock"
+          - button "Reset" [ref=e53] [cursor=pointer]:
+            - img [ref=e54]
+            - text: Reset
+      - generic [ref=e57]:
+        - table [ref=e59]:
+          - rowgroup [ref=e60]:
+            - row "Name Category Price Stock Min. Stock Status" [ref=e61]:
+              - columnheader "Name" [ref=e62]
+              - columnheader "Category" [ref=e63]
+              - columnheader "Price" [ref=e64]
+              - columnheader "Stock" [ref=e65]
+              - columnheader "Min. Stock" [ref=e66]
+              - columnheader "Status" [ref=e67]
+          - rowgroup [ref=e68]:
+            - row "Laptop PC $50.00 5 Low Stock" [ref=e69]:
+              - cell "Laptop" [ref=e70]
+              - cell "PC" [ref=e71]
+              - cell "$50.00" [ref=e72]
+              - cell [ref=e73]
+              - cell "5" [ref=e74]
+              - cell "Low Stock" [ref=e75]:
+                - generic [ref=e76]:
+                  - img [ref=e77]
+                  - text: Low Stock
+        - generic [ref=e79]:
+          - generic [ref=e80]: Showing 1 to 1 of 1
+          - generic [ref=e81]:
+            - button "First page" [disabled] [ref=e82]:
+              - img [ref=e83]
+            - button "Previous page" [disabled] [ref=e86]:
+              - img [ref=e87]
+            - generic [ref=e89]:
+              - spinbutton [ref=e90]: "1"
+              - generic [ref=e91]: of 1
+            - button "Next page" [disabled] [ref=e92]:
+              - img [ref=e93]
+            - button "Last page" [disabled] [ref=e95]:
+              - img [ref=e96]
+  - contentinfo [ref=e99]:
+    - paragraph [ref=e101]: © 2025 Inventory Management System. All rights reserved.
+  - alert [ref=e102]
+```

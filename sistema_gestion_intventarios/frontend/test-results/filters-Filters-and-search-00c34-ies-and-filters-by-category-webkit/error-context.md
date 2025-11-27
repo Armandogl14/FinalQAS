@@ -106,7 +106,5 @@
               - img [ref=e117]
   - contentinfo [ref=e120]:
     - paragraph [ref=e122]: © 2025 Inventory Management System. All rights reserved.
-  - button "Open Next.js Dev Tools" [ref=e128] [cursor=pointer]:
-    - img [ref=e129]
-  - alert [ref=e134]
+  - alert [ref=e123]
 ```
