@@ -1,0 +1,54 @@
+{
+  "id": null,
+  "uid": "inventory-overview",
+  "title": "Inventory Overview",
+  "timezone": "browser",
+  "schemaVersion": 38,
+  "version": 1,
+  "refresh": "10s",
+  "time": { "from": "now-1h", "to": "now" },
+  "panels": [
+    {
+      "id": 1,
+      "type": "stat",
+      "title": "Products Total",
+      "datasource": { "type": "prometheus", "name": "Prometheus" },
+      "targets": [ { "refId": "A", "expr": "inventory_products_total" } ]
+    },
+    {
+      "id": 2,
+      "type": "stat",
+      "title": "Low Stock",
+      "datasource": { "type": "prometheus", "name": "Prometheus" },
+      "targets": [ { "refId": "A", "expr": "inventory_products_low_stock" } ]
+    },
+    {
+      "id": 3,
+      "type": "stat",
+      "title": "Out of Stock",
+      "datasource": { "type": "prometheus", "name": "Prometheus" },
+      "targets": [ { "refId": "A", "expr": "inventory_products_out_of_stock" } ]
+    },
+    {
+      "id": 4,
+      "type": "stat",
+      "title": "Total Value",
+      "datasource": { "type": "prometheus", "name": "Prometheus" },
+      "targets": [ { "refId": "A", "expr": "inventory_total_value" } ]
+    },
+    {
+      "id": 5,
+      "type": "timeseries",
+      "title": "Create Rate (5m)",
+      "datasource": { "type": "prometheus", "name": "Prometheus" },
+      "targets": [ { "refId": "A", "expr": "rate(inventory_products_created_total[5m])" } ]
+    },
+    {
+      "id": 6,
+      "type": "timeseries",
+      "title": "Delete Rate (5m)",
+      "datasource": { "type": "prometheus", "name": "Prometheus" },
+      "targets": [ { "refId": "A", "expr": "rate(inventory_products_deleted_total[5m])" } ]
+    }
+  ]
+}
