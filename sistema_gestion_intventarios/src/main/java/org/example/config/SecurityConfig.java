@@ -23,6 +23,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 @Configuration
@@ -77,28 +79,35 @@ public class SecurityConfig {
 
     @Bean
     public JwtAuthenticationConverter jwtAuthenticationConverter() {
-        JwtGrantedAuthoritiesConverter grantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
-        grantedAuthoritiesConverter.setAuthoritiesClaimName("roles");
-        grantedAuthoritiesConverter.setAuthorityPrefix(""); // Sin prefijo extra porque ya viene de Keycloak
-
-        JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
-        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(
-                jwt -> {
-                    // DEBUG mejorado
-                    System.out.println("=== JWT DEBUG ===");
-                    System.out.println("Subject: " + jwt.getSubject());
-                    System.out.println("Preferred Username: " + jwt.getClaim("preferred_username"));
-                    System.out.println("Roles claim: " + jwt.getClaim("roles"));
-                    System.out.println("All claims: " + jwt.getClaims().keySet());
-
-                    Collection<GrantedAuthority> authorities = grantedAuthoritiesConverter.convert(jwt);
-                    System.out.println("Converted authorities: " + authorities);
-                    System.out.println("=== END DEBUG ===");
-
-                    return authorities;
+        JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
+        converter.setJwtGrantedAuthoritiesConverter(jwt -> {
+            List<String> roles = new ArrayList<>();
+            Object realmAccess = jwt.getClaim("realm_access");
+            if (realmAccess instanceof Map<?, ?> realm) {
+                Object r = realm.get("roles");
+                if (r instanceof Collection<?> rc) {
+                    for (Object o : rc) {
+                        if (o != null) roles.add(o.toString());
+                    }
                 }
-        );
-        return jwtAuthenticationConverter;
+            }
+            Object resourceAccess = jwt.getClaim("resource_access");
+            if (resourceAccess instanceof Map<?, ?> res) {
+                Object client = res.get("inventory-app-public");
+                if (client instanceof Map<?, ?> cm) {
+                    Object cr = cm.get("roles");
+                    if (cr instanceof Collection<?> crc) {
+                        for (Object o : crc) {
+                            if (o != null) roles.add(o.toString());
+                        }
+                    }
+                }
+            }
+            return roles.stream()
+                    .map(r -> new SimpleGrantedAuthority("ROLE_" + r.toUpperCase()))
+                    .collect(Collectors.toSet());
+        });
+        return converter;
     }
 
     @Bean
@@ -124,9 +133,9 @@ public class SecurityConfig {
     @Bean
     public JwtDecoder jwtDecoder() {
         // Usar la URL externa para validar el issuer
-        String issuerUri = "http://localhost:8180/realms/inventory-realm";
+        String issuerUri = "http://localhost:8180/realms/inventario";
         // Pero configurar manualmente el JWK Set URI usando el nombre interno
-        String jwkSetUri = "http://keycloak:8080/realms/inventory-realm/protocol/openid-connect/certs";
+        String jwkSetUri = "http://keycloak:8080/realms/inventario/protocol/openid-connect/certs";
 
         return NimbusJwtDecoder.withJwkSetUri(jwkSetUri)
                 .build();
