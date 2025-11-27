@@ -1,0 +1,51 @@
+{
+  "realm": "inventario",
+  "enabled": true,
+  "displayName": "Inventario",
+  "registrationAllowed": false,
+  "rememberMe": true,
+  "sslRequired": "external",
+  "roles": {
+    "realm": [
+      { "name": "admin" },
+      { "name": "employee" }
+    ]
+  },
+  "clients": [
+    {
+      "clientId": "inventory-app-public",
+      "name": "Inventory App Public",
+      "protocol": "openid-connect",
+      "publicClient": true,
+      "enabled": true,
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": true,
+      "redirectUris": [
+        "http://localhost:3000/*"
+      ],
+      "webOrigins": [
+        "http://localhost:3000"
+      ],
+      "attributes": {
+        "post.logout.redirect.uris": "+"
+      }
+    }
+  ],
+  "users": [
+    {
+      "username": "testuser",
+      "email": "testuser@example.com",
+      "firstName": "Test",
+      "lastName": "User",
+      "enabled": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "testpass123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": ["admin"]
+    }
+  ]
+}

@@ -1,10 +1,10 @@
-#!/bin/bash
+#!/bin/sh
 
 # Esperar a que Keycloak esté listo
 sleep 20
 
 # Obtener token de acceso
-TOKEN=$(curl -s -X POST http://localhost:8080/realms/master/protocol/openid-connect/token \
+TOKEN=$(curl -s -X POST http://keycloak:8080/realms/master/protocol/openid-connect/token \
   -H "Content-Type: application/x-www-form-urlencoded" \
   -d "client_id=admin-cli" \
   -d "username=admin" \
@@ -14,23 +14,23 @@ TOKEN=$(curl -s -X POST http://localhost:8080/realms/master/protocol/openid-conn
 echo "Token obtenido: ${TOKEN:0:20}..."
 
 # Verificar si el realm ya existe
-REALM_EXISTS=$(curl -s -X GET "http://localhost:8080/admin/realms/inventory-realm" \
+REALM_EXISTS=$(curl -s -X GET "http://keycloak:8080/admin/realms/inventario" \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" | grep -c "inventory-realm")
 
 if [ $REALM_EXISTS -gt 0 ]; then
-  echo "✓ El realm 'inventory-realm' ya existe"
+  echo "✓ El realm 'inventario' ya existe"
 else
-  echo "Creando realm 'inventory-realm'..."
+  echo "Creando realm 'inventario'..."
   
   # Crear el realm
-  REALM_ID=$(curl -s -X POST "http://localhost:8080/admin/realms" \
+  REALM_ID=$(curl -s -X POST "http://keycloak:8080/admin/realms" \
     -H "Authorization: Bearer $TOKEN" \
     -H "Content-Type: application/json" \
     -d '{
-      "realm": "inventory-realm",
+      "realm": "inventario",
       "enabled": true,
-      "displayName": "Inventory Realm",
+      "displayName": "Inventario",
       "accessTokenLifespan": 300,
       "refreshTokenLifespan": 1800
     }')
@@ -39,7 +39,7 @@ else
   
   # Crear cliente public
   echo "Creando cliente 'inventory-app-public'..."
-  CLIENT_ID=$(curl -s -X POST "http://localhost:8080/admin/realms/inventory-realm/clients" \
+  CLIENT_ID=$(curl -s -X POST "http://keycloak:8080/admin/realms/inventario/clients" \
     -H "Authorization: Bearer $TOKEN" \
     -H "Content-Type: application/json" \
     -d '{
@@ -73,7 +73,7 @@ else
   
   # Crear usuario de prueba
   echo "Creando usuario 'testuser'..."
-  curl -s -X POST "http://localhost:8080/admin/realms/inventory-realm/users" \
+  curl -s -X POST "http://keycloak:8080/admin/realms/inventario/users" \
     -H "Authorization: Bearer $TOKEN" \
     -H "Content-Type: application/json" \
     -d '{

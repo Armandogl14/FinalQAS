@@ -15,16 +15,18 @@ services:
   keycloak:
     image: quay.io/keycloak/keycloak:26.3.0
     container_name: keycloak
-    command: start-dev
+    command: ["start-dev", "--import-realm"]
     environment:
       KC_DB: postgres
       KC_DB_URL: jdbc:postgresql://postgres:5432/inventorydb
       KC_DB_USERNAME: inventoryuser
       KC_DB_PASSWORD: inventorypass
-      KEYCLOAK_ADMIN: admin
-      KEYCLOAK_ADMIN_PASSWORD: admin
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
     ports:
       - "8180:8080"
+    volumes:
+      - ./keycloak/realm-inventory.json:/opt/keycloak/data/import/realm-inventory.json:ro
     depends_on:
       - postgres
 
@@ -37,13 +39,20 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/inventorydb
       - SPRING_DATASOURCE_USERNAME=inventoryuser
       - SPRING_DATASOURCE_PASSWORD=inventorypass
-      - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI=http://keycloak:8080/realms/inventory-realm
+      - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI=http://keycloak:8080/realms/inventario
+      - SPRING_FLYWAY_ENABLED=true
+      - SPRING_FLYWAY_LOCATIONS=classpath:migration
+      - SPRING_FLYWAY_BASELINE_ON_MIGRATE=true
+      - SPRING_FLYWAY_BASELINE_VERSION=1
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=none
       - OTEL_SERVICE_NAME=inventory-backend
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
       - OTEL_EXPORTER_OTLP_PROTOCOL=grpc
       - OTEL_TRACES_EXPORTER=otlp
       - OTEL_LOGS_EXPORTER=otlp
       - OTEL_RESOURCE_ATTRIBUTES=service.version=1.0.0,environment=docker
+      - OTEL_TRACES_SAMPLER=always_on
+      - OTEL_LOG_LEVEL=debug
     ports:
       - "8080:8080"
     depends_on:
@@ -137,11 +146,13 @@ services:
   keycloak-init:
     image: curlimages/curl:8.5.0
     container_name: keycloak-init
-    entrypoint: /bin/sh -c "sleep 30 && /scripts/keycloak-init.sh"
-    volumes:
-      - ./keycloak-init.sh:/scripts/keycloak-init.sh:ro
+    entrypoint: ["/bin/sh","-c"]
+    command: >
+      sleep 30; TOKEN=$$(curl -s -X POST http://keycloak:8080/realms/master/protocol/openid-connect/token -H "Content-Type: application/x-www-form-urlencoded" -d "client_id=admin-cli" -d "username=admin" -d "password=admin" -d "grant_type=password" | grep -o '"access_token":"[^\"]*"' | cut -d '"' -f4); echo "Token: $${TOKEN:0:16}..."; if curl -s -X GET "http://keycloak:8080/admin/realms/inventory-realm" -H "Authorization: Bearer $$TOKEN" -H "Content-Type: application/json" | grep -q "inventory-realm"; then echo "Realm exists"; else echo "Creating realm..."; curl -s -X POST "http://keycloak:8080/admin/realms" -H "Authorization: Bearer $$TOKEN" -H "Content-Type: application/json" -d '{"realm":"inventory-realm","enabled":true,"displayName":"Inventory Realm","accessTokenLifespan":300,"refreshTokenLifespan":1800}'; echo "Creating client..."; curl -s -X POST "http://keycloak:8080/admin/realms/inventory-realm/clients" -H "Authorization: Bearer $$TOKEN" -H "Content-Type: application/json" -d '{"clientId":"inventory-app-public","name":"Inventory App Public","public":true,"enabled":true,"redirectUris":["http://localhost:3000/*"],"webOrigins":["http://localhost:3000"]}'; echo "Creating user..."; curl -s -X POST "http://keycloak:8080/admin/realms/inventory-realm/users" -H "Authorization: Bearer $$TOKEN" -H "Content-Type: application/json" -d '{"username":"testuser","email":"testuser@example.com","firstName":"Test","lastName":"User","enabled":true,"credentials":[{"temporary":false,"type":"password","value":"testpass123"}]}'; fi
     depends_on:
       - keycloak
+    profiles:
+      - seed
     networks:
       - default
 
